@@ -39,7 +39,6 @@ int ignore_opcode(void *ctx) {
 """
 
 b = BPF(text=program)
-b.attach_raw_tracepoint(tp="sys_enter", fn_name="hello")
 
 ignore_fn = b.load_func("ignore_opcode", BPF.RAW_TRACEPOINT)
 exec_fn = b.load_func("hello_exec", BPF.RAW_TRACEPOINT)
@@ -47,8 +46,10 @@ timer_fn = b.load_func("hello_timer", BPF.RAW_TRACEPOINT)
 
 prog_array = b.get_table("syscall")
 
-# Ignore all syscalls initially
+# Ignore all syscalls except syscall number 140
 for i in range(len(prog_array)):
+    if i == 140:
+        continue  # Skip mapping syscall 140 (setpriority) - can be triggered using 'nice' - let it use bpf_trace_printk default handler
     prog_array[ct.c_int(i)] = ct.c_int(ignore_fn.fd)
 
 # Only enable few syscalls which are of the interest
@@ -58,5 +59,6 @@ prog_array[ct.c_int(223)] = ct.c_int(timer_fn.fd)
 prog_array[ct.c_int(224)] = ct.c_int(timer_fn.fd)
 prog_array[ct.c_int(225)] = ct.c_int(timer_fn.fd)
 prog_array[ct.c_int(226)] = ct.c_int(timer_fn.fd)
+b.attach_raw_tracepoint(tp="sys_enter", fn_name="hello")
 
 b.trace_print()
