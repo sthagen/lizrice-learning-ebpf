@@ -1,6 +1,6 @@
 # Learning eBPF
 
-This repo accompanies my new book [Learning
+This repo accompanies my book [Learning
 eBPF](https://www.amazon.com/Learning-eBPF-Programming-Observability-Networking/dp/1098135121)
 (published by O'Reilly).
 
