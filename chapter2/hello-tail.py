@@ -46,7 +46,7 @@ timer_fn = b.load_func("hello_timer", BPF.RAW_TRACEPOINT)
 
 prog_array = b.get_table("syscall")
 
-# Ignore all syscalls except syscall number 140
+# Ignore all syscalls initially
 for i in range(len(prog_array)):
     if i == 140:
         continue  # Skip mapping syscall 140 (setpriority) - can be triggered using 'nice' - let it use bpf_trace_printk default handler
