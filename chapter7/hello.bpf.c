@@ -53,7 +53,7 @@ int BPF_KPROBE(kprobe_do_execve, struct filename *filename) {
 
    bpf_get_current_comm(data.command, sizeof(data.command));
    const char *name = BPF_CORE_READ(filename, name);
-   bpf_probe_read_kernel(data.path, sizeof(data.path), name);
+   bpf_probe_read_kernel_str(data.path, sizeof(data.path), name);
 
    bpf_printk("%s: filename->name: %s", kprobe_msg, name);
    
